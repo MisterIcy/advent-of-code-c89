@@ -3,7 +3,9 @@
 int main(int argc, char** argv) {
     size_t fileSize;
     const char* data;
+    char *currentChar;
     int currentFloor = 0;
+    unsigned int firstBasementPosition = 0;
 
     if (argc < 2) {
         printf("Usage: %s <input file>\n", argv[0]);
@@ -16,17 +18,26 @@ int main(int argc, char** argv) {
         return FAILURE_EXIT_CODE;
     }
 
-    while(*data != '\0') {
-        if (*data == '(') {
+    currentChar = (char *)data;
+
+    while(*currentChar != '\0') {
+        if (*currentChar == '(') {
             currentFloor++;
-        } else if (*data == ')') {
+        } else if (*currentChar == ')') {
             currentFloor--;
         }
-        data++;
+
+        if (currentFloor == -1 && firstBasementPosition == 0) {
+            firstBasementPosition = (currentChar - data) + 1;
+        }
+
+        currentChar++;
     }
 
     printf("=== Part 1 ===\n");
     printf("Santa is on floor %d\n", currentFloor);
+    printf("=== Part 2 ===\n");
+    printf("Santa entered the basement at position %d\n", firstBasementPosition);
 
     return SUCCESS_EXIT_CODE;
 }
