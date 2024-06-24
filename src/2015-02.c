@@ -26,10 +26,34 @@ unsigned int calculateWrappingPaper(const Present* present) {
            smallestSide;
 }
 
+unsigned int calculateWrappingRibbon(const Present* present) {
+    unsigned int sides[3];
+    int i, j;
+    
+    sides[0] = present->width;
+    sides[1] = present->length;
+    sides[2] = present->height;
+
+    for (i = 0; i < 3; i++) {
+        for (j = i + 1; j < 3; j++) {
+            if (sides[i] > sides[j]) {
+                unsigned int t = sides[i];
+                sides[i] = sides[j];
+                sides[j] = t;
+            }
+        }
+    }
+
+    return 2 * sides[0] +
+           2 * sides[1] + 
+           present->width * present->length * present->height;    
+}
+
 int main(int argc, char** argv) {
     size_t fileSize;
     const char* data;
     unsigned int totalWrappingPaper = 0;
+    unsigned int totalWrappingRibbon = 0;
 
     if (argc < 2) {
         printf("Usage: %s <input file>\n", argv[0]);
@@ -52,6 +76,7 @@ int main(int argc, char** argv) {
         }
 
         totalWrappingPaper += calculateWrappingPaper(&present);
+        totalWrappingRibbon += calculateWrappingRibbon(&present);
 
         do {
             data++;
@@ -60,6 +85,8 @@ int main(int argc, char** argv) {
 
     printf("=== Part 1 ===\n");
     printf("The elves need %u sqft of wrapping paper!\n", totalWrappingPaper);
+    printf("=== Part 2 ===\n");
+    printf("The elves also need %u ft of ribbon!\n", totalWrappingRibbon);
 
     return SUCCESS_EXIT_CODE;
 }
